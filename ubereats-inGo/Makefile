@@ -1,2 +1,2 @@
 up:
-	go run main.go
+	rm ubereats.db && go run main.go
