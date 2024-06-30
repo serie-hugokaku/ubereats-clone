@@ -8,10 +8,10 @@ import {
   restaurantsActionTypes,
   restaurantsReducer,
 } from "../reducers/restaurants";
-import {Link} from "react-router-dom"
-import {Skeleton} from "@mui/material"
+import { Link } from "react-router-dom";
+import { Skeleton } from "@mui/material";
 import { REQUEST_STATE } from "../constants";
-import RestaurantImage from "../images/restaurant-image.jpg"
+import RestaurantImage from "../images/restaurant-image.jpg";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -32,30 +32,30 @@ const MainCover = styled.img`
 `;
 
 const RestaurantsContentsList = styled.div`
-  display:flex;
+  display: flex;
   justify-content: space-around;
   margin-bottom: 150px;
-`
+`;
 
 const RestaurantsContentWrapper = styled.div`
   width: 450px;
   height: 300px;
   padding: 48px;
-`
+`;
 
 const RestaurantsImageNode = styled.img`
   width: 100%;
-`
+`;
 
 const MainText = styled.p`
   color: black;
   font-size: 18px;
-`
+`;
 
 const SubText = styled.p`
   color: black;
   font-size: 12px;
-`
+`;
 
 const Restaurants = () => {
   const [state, dispatch] = useReducer(restaurantsReducer, initialState);
@@ -71,7 +71,7 @@ const Restaurants = () => {
       }),
     );
 
-    console.log(state.restaurantsList)
+    console.log(state.restaurantsList);
   }, []);
 
   return (
@@ -84,25 +84,27 @@ const Restaurants = () => {
       </MainCoverImageWrapper>
 
       <RestaurantsContentsList>
-        {
-          state.fetchState === REQUEST_STATE.LOADING ? 
+        {state.fetchState === REQUEST_STATE.LOADING ? (
           <Fragment>
             <Skeleton variant="rect" width={450} height={300} />
             <Skeleton variant="rect" width={450} height={300} />
             <Skeleton variant="rect" width={450} height={300} />
           </Fragment>
-          :
-          state.restaurantsList.map((item, index) => 
-            <Link to={`/restaurants/${item.ID}/foods`} key={index} style={{textDecoration: "none"}}>
+        ) : (
+          state.restaurantsList.map((item, index) => (
+            <Link
+              to={`/restaurants/${item.ID}/foods`}
+              key={index}
+              style={{ textDecoration: "none" }}
+            >
               <RestaurantsContentWrapper>
                 <RestaurantsImageNode src={RestaurantImage} />
                 <MainText>{item.Name}</MainText>
                 <SubText>{`配送料：${item.Fee}円 ${item.TimeRequired}分`}</SubText>
               </RestaurantsContentWrapper>
             </Link>
-          )
-        }
-
+          ))
+        )}
       </RestaurantsContentsList>
     </Fragment>
   );
