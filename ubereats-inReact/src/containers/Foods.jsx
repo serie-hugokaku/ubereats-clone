@@ -15,9 +15,9 @@ import MainLogo from "../images/logo.png";
 import FoodImage from "../images/food-image.jpg";
 import { FoodWrapper } from "../components/FoodWrapper";
 import { FoodOrderDialog } from "../components/FoodOrderDialog";
-import {NewOrderConfirmDialog} from "../components/NewOrderConfirmDialog"
-import {postLineFoods, replaceLineFoods} from "../apis/line_food"
-import {HTTP_STATUS_CODE} from "../constants"
+import { NewOrderConfirmDialog } from "../components/NewOrderConfirmDialog";
+import { postLineFoods, replaceLineFoods } from "../apis/line_food";
+import { HTTP_STATUS_CODE } from "../constants";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -50,7 +50,7 @@ const ItemWrapper = styled.div`
 
 const Foods = () => {
   const params = useParams();
-  const navigete = useNavigate()
+  const navigete = useNavigate();
 
   const [foodsState, dispatch] = useReducer(foodsReducer, foodsInitialState);
   const initialState = {
@@ -75,19 +75,19 @@ const Foods = () => {
           isOpenNewOrderDialog: true,
           existingRestaurantName: e.response.data.ExistingRestaurant,
           newRestaurantName: e.response.data.NewRestaurant,
-        })
+        });
       } else {
         throw e;
       }
-    })
+    });
   };
 
   const replaceOrder = () => {
     replaceLineFoods({
       foodId: state.selectedFood.ID,
       count: state.selectedFoodCount,
-    }).then(() => navigete("/orders"))
-  }
+    }).then(() => navigete("/orders"));
+  };
 
   useEffect(() => {
     dispatch({ type: foodsActionTypes.FETCHING });
@@ -169,16 +169,15 @@ const Foods = () => {
           }
         />
       )}
-      {
-        state.isOpenNewOrderDialog &&
+      {state.isOpenNewOrderDialog && (
         <NewOrderConfirmDialog
           isOpen={state.isOpenNewOrderDialog}
-          onClose={() => setState({...state, isOpenNewOrderDialog: false})}
+          onClose={() => setState({ ...state, isOpenNewOrderDialog: false })}
           existingRestaurantName={state.existingRestaurantName}
           newRestaurantName={state.newRestaurantName}
           onClickSubmit={() => replaceOrder()}
         />
-      }
+      )}
     </Fragment>
   );
 };

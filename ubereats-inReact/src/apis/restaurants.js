@@ -3,8 +3,7 @@ import { restaurants } from "../urls";
 
 export const fetchRestaurants = async () => {
   try {
-    const res = await axios
-      .get(restaurants);
+    const res = await axios.get(restaurants);
     return res.data;
   } catch (e) {
     return console.error(e);
