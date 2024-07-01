@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"ubereats-inGo/controllers"
 	"ubereats-inGo/database"
 
@@ -26,6 +27,15 @@ func main() {
 
 	r.Get("/api/v1/restaurants", controllers.GetRestaurants)
 	r.Get("/api/v1/restaurants/{restaurantID}/foods", controllers.GetFoods)
+	r.Post("/api/v1/line_foods", controllers.CreateLineFoods)
 
-	http.ListenAndServe(":8080", r)
+	addr := os.Getenv("ADDR")
+	if addr == "" {
+		addr = ":8080"
+	}
+
+	log.Printf("listen: %s", addr)
+	if err := http.ListenAndServe(addr, r); err != nil {
+		log.Fatalf("!! %+v", err)
+	}
 }

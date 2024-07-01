@@ -9,4 +9,5 @@ type Food struct {
 	Description  string
 	RestaurantID uint
 	LineFood     LineFood
+	Restaurant   Restaurant
 }

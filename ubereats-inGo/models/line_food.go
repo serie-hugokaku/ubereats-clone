@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type LineFood struct {
 	gorm.Model
@@ -9,4 +11,5 @@ type LineFood struct {
 	FoodID       uint
 	RestaurantID uint
 	OrderID      uint
+	Restaurant   Restaurant
 }
