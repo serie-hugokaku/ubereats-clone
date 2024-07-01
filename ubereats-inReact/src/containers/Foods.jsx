@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useReducer } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Fragment, useEffect, useReducer, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { fetchFoods } from "../apis/foods";
 import {
   foodsActionTypes,
@@ -14,6 +14,10 @@ import { Skeleton } from "@mui/material";
 import MainLogo from "../images/logo.png";
 import FoodImage from "../images/food-image.jpg";
 import { FoodWrapper } from "../components/FoodWrapper";
+import { FoodOrderDialog } from "../components/FoodOrderDialog";
+import {NewOrderConfirmDialog} from "../components/NewOrderConfirmDialog"
+import {postLineFoods, replaceLineFoods} from "../apis/line_food"
+import {HTTP_STATUS_CODE} from "../constants"
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -46,8 +50,44 @@ const ItemWrapper = styled.div`
 
 const Foods = () => {
   const params = useParams();
+  const navigete = useNavigate()
 
   const [foodsState, dispatch] = useReducer(foodsReducer, foodsInitialState);
+  const initialState = {
+    isOpenOrderDialog: false,
+    selectedFood: null,
+    selectedFoodCount: 1,
+    isOpenNewOrderDialog: false,
+    existingRestaurantName: "",
+    newRestaurantName: "",
+  };
+  const [state, setState] = useState(initialState);
+
+  const submitOrder = () => {
+    postLineFoods({
+      foodId: state.selectedFood.ID,
+      count: state.selectedFoodCount,
+    }).then(() => {
+      if (e.response.status === HTTP_STATUS_CODE.NOT_ACCEPTABLE) {
+        setState({
+          ...state,
+          isOpenOrderDialog: false,
+          isOpenNewOrderDialog: true,
+          existingRestaurantName: e.response.data.ExistingRestaurant,
+          newRestaurantName: e.response.data.NewRestaurant,
+        })
+      } else {
+        throw e;
+      }
+    })
+  };
+
+  const replaceOrder = () => {
+    replaceLineFoods({
+      foodId: state.selectedFood.ID,
+      count: state.selectedFoodCount,
+    }).then(() => navigete("/orders"))
+  }
 
   useEffect(() => {
     dispatch({ type: foodsActionTypes.FETCHING });
@@ -88,13 +128,57 @@ const Foods = () => {
             <ItemWrapper key={food.ID}>
               <FoodWrapper
                 food={food}
-                onClickFoodWrapper={(food) => console.log(food)}
+                onClickFoodWrapper={(food) =>
+                  setState({
+                    ...state,
+                    isOpenOrderDialog: true,
+                    selectedFood: food,
+                  })
+                }
                 imageUrl={FoodImage}
               />
             </ItemWrapper>
           ))
         )}
       </FoodsList>
+      {state.isOpenOrderDialog && (
+        <FoodOrderDialog
+          isOpen={state.isOpenOrderDialog}
+          food={state.selectedFood}
+          countNumber={state.selectedFoodCount}
+          onClickCountUp={() =>
+            setState({
+              ...state,
+              selectedFoodCount: state.selectedFoodCount + 1,
+            })
+          }
+          onClickCountDown={() =>
+            setState({
+              ...state,
+              selectedFoodCount: state.selectedFoodCount - 1,
+            })
+          }
+          onClickOrder={() => submitOrder()}
+          onClose={() =>
+            setState({
+              ...state,
+              isOpenOrderDialog: false,
+              selectedFood: null,
+              selectedFoodCount: 1,
+            })
+          }
+        />
+      )}
+      {
+        state.isOpenNewOrderDialog &&
+        <NewOrderConfirmDialog
+          isOpen={state.isOpenNewOrderDialog}
+          onClose={() => setState({...state, isOpenNewOrderDialog: false})}
+          existingRestaurantName={state.existingRestaurantName}
+          newRestaurantName={state.newRestaurantName}
+          onClickSubmit={() => replaceOrder()}
+        />
+      }
     </Fragment>
   );
 };

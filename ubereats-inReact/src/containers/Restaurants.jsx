@@ -70,8 +70,6 @@ const Restaurants = () => {
         },
       }),
     );
-
-    console.log(state.restaurantsList);
   }, []);
 
   return (
