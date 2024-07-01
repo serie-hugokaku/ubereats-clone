@@ -1,6 +1,8 @@
 import styled from "styled-components"
 import { Fragment } from "react";
 import {FONT_SIZE} from "../style_constants"
+import {LocalMallIcon, QueryBuilderIcon} from "./icons/index"
+import {Link} from "react-router-dom"
 
 const LineWrapper = styled.div`
     display: flex;
@@ -13,7 +15,45 @@ const AmountText = styled.p`
 `
 
 export const OrderDetailItems = ({
-    
+    restaurantId,
+    restaurantName,
+    restaurantFee,
+    timeRequired,
+    foodCount,
+    price,
 }) => (
-    <Fragment></Fragment>
+    <Fragment>
+        <LineWrapper>
+            <LocalMallIcon />
+            <Link to={`restaurants/${restaurantId}/foods`}>
+                {restaurantName}
+            </Link>
+        </LineWrapper>
+        <LineWrapper>
+            <QueryBuilderIcon />
+            {timeRequired}分で到着予定
+        </LineWrapper>
+        <LineWrapper>
+            <p>商品数</p>
+            <p>{foodCount}</p>
+        </LineWrapper>
+        <LineWrapper>
+            <p>
+            商品数：{foodCount}
+            </p>
+            <p>¥ {price}</p>
+        </LineWrapper>
+        <LineWrapper>
+            <p>配送料</p>
+            <p>¥ {restaurantFee}</p>
+        </LineWrapper>
+        <LineWrapper>
+            <AmountText>
+                合計
+            </AmountText>
+            <AmountText>
+                ¥ {price + restaurantFee}
+            </AmountText>
+        </LineWrapper>
+    </Fragment>
 )
